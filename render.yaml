@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: dancodev-wifi
+    env: node
+    buildCommand: npm install
+    startCommand: node server/index.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "3000"
+      - key: DB_HOST
+        value: fromDatabase
+      - key: DB_USER
+        value: fromDatabase
+      - key: DB_PASSWORD
+        value: fromDatabase
+      - key: DB_NAME
+        value: fromDatabase
+      - key: SESSION_SECRET
+        value: DancoDevNet2024SecretKey
+
+  - type: mysql
+    name: dancodev-db
+    databaseName: dancodev_wifi
+    user: admin
