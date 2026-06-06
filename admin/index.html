@@ -1,0 +1,216 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DancoDev Net - Admin</title>
+  <link rel="stylesheet" href="/admin/css/admin.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div id="login-screen" class="login-overlay">
+  <div class="login-box">
+    <div class="login-header">
+      <i class="fas fa-wifi"></i>
+      <h2>DancoDev Net</h2>
+      <p>Admin Panel Login</p>
+    </div>
+    <div class="form-group">
+      <label>Username</label>
+      <input type="text" id="username" placeholder="Enter username" class="form-input">
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <div class="password-wrapper">
+        <input type="password" id="password" placeholder="Enter password" class="form-input">
+        <i class="fas fa-eye toggle-password" onclick="togglePassword('password', this)"></i>
+      </div>
+    </div>
+    <button class="btn btn-primary btn-block" onclick="login()">
+      <i class="fas fa-sign-in-alt"></i> Login
+    </button>
+    <p id="login-error" style="color:#ef4444;text-align:center;margin-top:12px;display:none;"></p>
+  </div>
+</div>
+
+<!-- MOBILE HAMBURGER -->
+<button class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleSidebar()">
+  <i class="fas fa-bars"></i>
+</button>
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+<!-- DASHBOARD -->
+<div id="dashboard-screen" class="admin-container" style="display:none;">
+  
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <h2>DancoDev <span>Net</span></h2>
+      <p>WiFi Billing Admin</p>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-dropdown">
+        <a href="#" class="nav-item dropdown-toggle" data-dropdown="dash">
+          <i class="fas fa-th-large"></i> Dashboard <i class="fas fa-chevron-down dropdown-arrow"></i>
+        </a>
+        <div class="dropdown-menu" id="dash-dropdown">
+          <a href="#" class="dropdown-item active" data-tab="dashboard" onclick="closeSidebar()"><i class="fas fa-chart-line"></i> Overview</a>
+          <a href="#" class="dropdown-item" data-tab="sessions" onclick="closeSidebar()"><i class="fas fa-users"></i> Active Sessions</a>
+          <a href="#" class="dropdown-item" data-tab="transactions" onclick="closeSidebar()"><i class="fas fa-receipt"></i> Transactions</a>
+        </div>
+      </div>
+      <a href="#" class="nav-item" data-tab="plans" onclick="closeSidebar()"><i class="fas fa-wifi"></i> WiFi Plans</a>
+      <hr class="sidebar-divider">
+      <div class="nav-dropdown">
+        <a href="#" class="nav-item dropdown-toggle" data-dropdown="set">
+          <i class="fas fa-cog"></i> Settings <i class="fas fa-chevron-down dropdown-arrow"></i>
+        </a>
+        <div class="dropdown-menu" id="set-dropdown">
+          <a href="#" class="dropdown-item" data-tab="mpesa" onclick="closeSidebar()"><i class="fas fa-mobile-alt"></i> M-Pesa API</a>
+          <a href="#" class="dropdown-item" data-tab="mikrotik" onclick="closeSidebar()"><i class="fas fa-server"></i> MikroTik</a>
+          <a href="#" class="dropdown-item" data-tab="password" onclick="closeSidebar()"><i class="fas fa-key"></i> Change Password</a>
+          <a href="#" class="dropdown-item" data-tab="users" onclick="closeSidebar()"><i class="fas fa-user-cog"></i> Manage Users</a>
+        </div>
+      </div>
+      <hr class="sidebar-divider">
+      <a href="#" class="nav-item" onclick="logout()" style="color:#ff8a80;"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </nav>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main-content">
+    <header class="topbar">
+      <h1 id="page-title">Dashboard Overview</h1>
+      <span class="admin-badge"><i class="fas fa-user-shield"></i> Admin</span>
+    </header>
+
+    <!-- DASHBOARD TAB -->
+    <div class="tab-content active" id="tab-dashboard">
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-icon" style="background:rgba(16,185,129,0.1);"><i class="fas fa-coins" style="color:#10b981;"></i></div><div class="stat-info"><span class="stat-label">Total Revenue</span><span class="stat-value" id="stat-revenue">Ksh 0</span></div></div>
+        <div class="stat-card"><div class="stat-icon" style="background:rgba(59,130,246,0.1);"><i class="fas fa-signal" style="color:#3b82f6;"></i></div><div class="stat-info"><span class="stat-label">Active Users</span><span class="stat-value" id="stat-active">0</span></div></div>
+        <div class="stat-card"><div class="stat-icon" style="background:rgba(245,158,11,0.1);"><i class="fas fa-exchange-alt" style="color:#f59e0b;"></i></div><div class="stat-info"><span class="stat-label">Transactions</span><span class="stat-value" id="stat-transactions">0</span></div></div>
+        <div class="stat-card"><div class="stat-icon" style="background:rgba(239,68,68,0.1);"><i class="fas fa-calendar-day" style="color:#ef4444;"></i></div><div class="stat-info"><span class="stat-label">Today</span><span class="stat-value" id="stat-today">Ksh 0</span></div></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><h3>Recent Activity</h3><select id="activity-filter" onchange="loadDashboard()" class="form-input" style="width:auto;"><option value="all">All</option><option value="completed">Paid</option></select></div>
+        <div class="table-responsive"><table><thead><tr><th>Date</th><th>Phone</th><th>Action</th><th>Details</th></tr></thead><tbody id="activity-table"></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- SESSIONS TAB -->
+    <div class="tab-content" id="tab-sessions">
+      <div class="card"><div class="card-header"><h3>Active Sessions</h3></div><div class="table-responsive"><table><thead><tr><th>Username</th><th>Phone</th><th>Plan</th><th>Started</th><th>Expires</th><th>Status</th></tr></thead><tbody id="sessions-table"></tbody></table></div></div>
+    </div>
+
+    <!-- TRANSACTIONS TAB -->
+    <div class="tab-content" id="tab-transactions">
+      <div class="card"><div class="card-header"><h3>Transactions</h3><input type="text" id="transaction-search" placeholder="Search phone..." class="form-input" style="width:200px;" onkeyup="loadTransactions()"></div><div class="table-responsive"><table><thead><tr><th>Date</th><th>Phone</th><th>Plan</th><th>Amount</th><th>Method</th><th>Receipt</th><th>Status</th></tr></thead><tbody id="transactions-table"></tbody></table></div></div>
+    </div>
+
+    <!-- PLANS TAB -->
+    <div class="tab-content" id="tab-plans">
+      <div class="card">
+        <div class="card-header"><h3>WiFi Plans</h3><button class="btn btn-primary" onclick="showAddPlan()"><i class="fas fa-plus"></i> Add Plan</button></div>
+        <div class="table-responsive"><table><thead><tr><th>Name</th><th>Duration</th><th>Price</th><th>Speed</th><th>Status</th><th>Actions</th></tr></thead><tbody id="plans-table"></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- MPESA TAB -->
+    <div class="tab-content" id="tab-mpesa">
+      <div class="card"><div class="card-header"><h3>M-Pesa API</h3></div><div class="form-card">
+        <div class="form-group"><label>Consumer Key</label><input type="text" id="mpesa-key" class="form-input"></div>
+        <div class="form-group"><label>Consumer Secret</label><input type="text" id="mpesa-secret" class="form-input"></div>
+        <div class="form-group"><label>Passkey</label><input type="text" id="mpesa-passkey" class="form-input"></div>
+        <div class="form-row"><div class="form-group"><label>Till Number</label><input type="text" id="mpesa-till" class="form-input"></div><div class="form-group"><label>Short Code</label><input type="text" id="mpesa-shortcode" class="form-input"></div></div>
+        <button class="btn btn-success" onclick="saveMpesaSettings()"><i class="fas fa-save"></i> Save</button>
+      </div></div>
+    </div>
+
+    <!-- MIKROTIK TAB -->
+    <div class="tab-content" id="tab-mikrotik">
+      <div class="card"><div class="card-header"><h3>MikroTik</h3></div><div class="form-card">
+        <div class="form-group"><label>Router IP</label><input type="text" id="mt-host" class="form-input"></div>
+        <div class="form-row"><div class="form-group"><label>Username</label><input type="text" id="mt-user" class="form-input"></div><div class="form-group"><label>Password</label><div class="password-wrapper"><input type="password" id="mt-pass" class="form-input"><i class="fas fa-eye toggle-password" onclick="togglePassword('mt-pass', this)"></i></div></div></div>
+        <button class="btn btn-success" onclick="saveMikrotikSettings()"><i class="fas fa-save"></i> Save</button>
+      </div></div>
+    </div>
+
+    <!-- PASSWORD TAB -->
+    <div class="tab-content" id="tab-password">
+      <div class="card"><div class="card-header"><h3>Change Admin Password</h3></div><div class="form-card">
+        <div class="form-group">
+          <label>Current Database Password</label>
+          <input type="text" id="current-admin-password-display" class="form-input" readonly style="background:#f0f0f0;font-family:monospace;font-weight:bold;color:#1a472a;">
+        </div>
+        <div class="form-group">
+          <label>Current Password (verify)</label>
+          <div class="password-wrapper">
+            <input type="password" id="current-password" placeholder="Enter current password" class="form-input">
+            <i class="fas fa-eye toggle-password" onclick="togglePassword('current-password', this)"></i>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>New Password</label>
+          <div class="password-wrapper">
+            <input type="password" id="new-password" placeholder="Enter new password" class="form-input">
+            <i class="fas fa-eye toggle-password" onclick="togglePassword('new-password', this)"></i>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Confirm New Password</label>
+          <div class="password-wrapper">
+            <input type="password" id="confirm-password" placeholder="Confirm new password" class="form-input">
+            <i class="fas fa-eye toggle-password" onclick="togglePassword('confirm-password', this)"></i>
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="changePassword()"><i class="fas fa-save"></i> Update Password</button>
+      </div></div>
+    </div>
+
+    <!-- USERS TAB -->
+    <div class="tab-content" id="tab-users">
+      <div class="card">
+        <div class="card-header"><h3>Manage Users</h3><button class="btn btn-primary" onclick="showAddUser()"><i class="fas fa-user-plus"></i> Add</button></div>
+        <div id="add-user-form" class="form-card" style="display:none;">
+          <div class="form-row"><div class="form-group"><label>Name</label><input type="text" id="new-user-name" class="form-input"></div><div class="form-group"><label>Username</label><input type="text" id="new-user-username" class="form-input"></div></div>
+          <div class="form-row"><div class="form-group"><label>Password</label><div class="password-wrapper"><input type="password" id="new-user-password" class="form-input"><i class="fas fa-eye toggle-password" onclick="togglePassword('new-user-password', this)"></i></div></div><div class="form-group"><label>Role</label><select id="new-user-role" class="form-input"><option value="admin">Admin</option><option value="cashier">Cashier</option></select></div></div>
+          <button class="btn btn-success" onclick="addUser()">Add</button>
+          <button class="btn btn-secondary" onclick="document.getElementById('add-user-form').style.display='none'">Cancel</button>
+        </div>
+        <div class="table-responsive"><table><thead><tr><th>Name</th><th>Username</th><th>Role</th><th>Status</th><th>Actions</th></tr></thead><tbody id="users-table"></tbody></table></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- PLAN ADD/EDIT MODAL -->
+<div id="plan-modal-overlay" class="modal-overlay-plan" style="display:none;" onclick="closePlanModal()">
+  <div class="modal-card-plan" onclick="event.stopPropagation()">
+    <div class="modal-header-plan">
+      <h3 id="plan-modal-title">Add Plan</h3>
+      <button class="modal-close-btn" onclick="closePlanModal()"><i class="fas fa-times"></i></button>
+    </div>
+    <input type="hidden" id="plan-id">
+    <div class="form-group"><label>Name</label><input type="text" id="plan-name" placeholder="Plan name" class="form-input"></div>
+    <div class="form-group"><label>Description</label><input type="text" id="plan-desc" placeholder="Description" class="form-input"></div>
+    <div class="form-row">
+      <div class="form-group"><label>Duration (min)</label><input type="number" id="plan-duration" placeholder="60" class="form-input"></div>
+      <div class="form-group"><label>Price (Ksh)</label><input type="number" id="plan-price" placeholder="50" class="form-input"></div>
+    </div>
+    <div class="form-group"><label>Speed</label><input type="text" id="plan-speed" placeholder="5M/5M" class="form-input"></div>
+    <div class="modal-actions-plan">
+      <button class="btn btn-success" onclick="savePlan()"><i class="fas fa-save"></i> Save</button>
+      <button class="btn btn-secondary" onclick="closePlanModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Socket.io for real-time updates -->
+<script src="/socket.io/socket.io.js"></script>
+<script src="/admin/js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,154 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DancoDev Net - Buy WiFi Access</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <!-- Background Animation -->
+  <div class="bg-particles">
+    <div class="particle p1"></div>
+    <div class="particle p2"></div>
+    <div class="particle p3"></div>
+  </div>
+
+  <div class="app-wrapper">
+    <div class="app-container">
+      <!-- Header -->
+      <header class="app-header">
+        <div class="header-content">
+          <div class="header-icon">
+            <i class="fas fa-wifi"></i>
+          </div>
+          <div class="header-text">
+            <h1>DancoDev <span>Net</span></h1>
+            <p>Fast, Reliable & Affordable Internet Access</p>
+          </div>
+        </div>
+        <!-- Payment Methods Badges -->
+        <div class="payment-methods-header">
+          <span class="method-badge mpesa">
+            <i class="fas fa-mobile-alt"></i> M-Pesa
+          </span>
+          <span class="method-badge airtel">
+            <i class="fas fa-signal"></i> Airtel Money
+          </span>
+        </div>
+      </header>
+
+      <!-- Main Content - Plan Cards Grid -->
+      <div class="main-content" id="plans-container"></div>
+    </div>
+  </div>
+
+  <!-- Payment Popup Modal -->
+  <div class="modal-overlay" id="payment-modal">
+    <div class="modal-card payment-modal-card">
+      <button class="modal-close" onclick="closePaymentModal()">
+        <i class="fas fa-times"></i>
+      </button>
+      
+      <div class="payment-modal-header">
+        <i class="fas fa-shopping-cart"></i>
+        <h3>💳 Complete Your Payment</h3>
+        <p>Enter your M-Pesa phone number to receive payment prompt</p>
+      </div>
+      
+      <div class="selected-plan-summary" id="selected-summary">
+        <span class="plan-info">Select a plan</span>
+        <span class="plan-amount">KES 0</span>
+      </div>
+
+      <div class="form-group">
+        <label>📱 M-Pesa Phone Number</label>
+        <div class="phone-input-wrapper">
+          <span class="phone-prefix">+254</span>
+          <input type="tel" id="phone" placeholder="7XX XXX XXX" maxlength="9" class="phone-input">
+        </div>
+      </div>
+
+      <button class="btn-pay" id="pay-btn" onclick="initiatePayment()">
+        <i class="fas fa-mobile-alt"></i> Pay with M-Pesa
+      </button>
+      
+      <p class="payment-hint">You will receive an STK Push notification on your phone</p>
+      
+      <div class="payment-methods-modal">
+        <span class="method-badge mpesa">
+          <i class="fas fa-mobile-alt"></i> M-Pesa
+        </span>
+        <span class="method-badge airtel">
+          <i class="fas fa-signal"></i> Airtel Money
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Processing Modal -->
+  <div class="modal-overlay" id="processing-modal">
+    <div class="modal-card">
+      <div class="phone-animation">
+        <i class="fas fa-mobile-alt"></i>
+        <div class="pulse-ring"></div>
+      </div>
+      <h2>Check Your Phone 📱</h2>
+      <p>Enter your <strong>M-Pesa PIN</strong> to complete the payment</p>
+      <div class="progress-bar">
+        <div class="progress-fill"></div>
+      </div>
+      <p class="timer-text" id="processing-timer">Waiting for payment...</p>
+      <button class="btn-cancel" onclick="cancelPayment()">Cancel Payment</button>
+    </div>
+  </div>
+
+  <!-- Success Modal -->
+  <div class="modal-overlay" id="success-modal">
+    <div class="modal-card success">
+      <div class="success-icon">
+        <i class="fas fa-check-circle"></i>
+      </div>
+      <h2>Payment Successful! 🎉</h2>
+      <p>Your WiFi access is now active</p>
+      
+      <div class="credentials-box">
+        <div class="cred-row">
+          <span class="cred-label">Username</span>
+          <span class="cred-value" id="cred-username">---</span>
+        </div>
+        <div class="cred-row">
+          <span class="cred-label">Password</span>
+          <span class="cred-value" id="cred-password">---</span>
+        </div>
+        <div class="cred-row">
+          <span class="cred-label">Plan</span>
+          <span class="cred-value" id="cred-plan">---</span>
+        </div>
+      </div>
+
+      <div class="timer-box">
+        <span class="timer-label">⏱ Time Remaining</span>
+        <span class="timer-display" id="timer">--:--:--</span>
+      </div>
+
+      <p class="connected-message">You are now connected to <strong>DancoDev Net</strong></p>
+    </div>
+  </div>
+
+  <!-- Error Modal -->
+  <div class="modal-overlay" id="error-modal">
+    <div class="modal-card error">
+      <div class="error-icon">
+        <i class="fas fa-times-circle"></i>
+      </div>
+      <h2 id="error-title">Payment Failed</h2>
+      <p id="error-message">Something went wrong. Please try again.</p>
+      <button class="btn-retry" onclick="goBack()">Try Again</button>
+    </div>
+  </div>
+
+  <script src="/js/app.js"></script>
+</body>
+</html>
